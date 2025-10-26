@@ -1,0 +1,31 @@
+需要新建一个config文件夹将config.php剪切在里面记得修改数据库
+
+
+数据库
+------------------------------------------
+-- 1. 创建数据库（若不存在则创建）
+CREATE DATABASE IF NOT EXISTS file_storage 
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_general_ci; -- 支持中文及特殊字符，兼容性更好
+
+-- 2. 使用该数据库
+USE file_storage;
+
+-- 3. 创建文件信息表（核心表，存储文件及上传相关信息）
+CREATE TABLE IF NOT EXISTS files (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- 自增主键，用于内部标识
+    upload_id VARCHAR(50) NOT NULL UNIQUE, -- 上传时生成的26位字母数字ID，唯一标识文件（下载/删除的验证依据）
+    file_name VARCHAR(255) NOT NULL, -- 原始文件名
+    file_path VARCHAR(255) NOT NULL, -- 文件在服务器的存储路径
+    file_size BIGINT NOT NULL, -- 文件大小（单位：字节）
+    upload_time DATETIME DEFAULT CURRENT_TIMESTAMP, -- 上传时间（自动记录）
+    upload_ip VARCHAR(45) NOT NULL -- 上传者IP地址（IPv4/IPv6均支持）
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 可选：创建索引优化查询（当文件数量大时提升性能）
+CREATE INDEX idx_upload_id ON files(upload_id); -- 优化按upload_id查询的速度
+CREATE INDEX idx_upload_time ON files(upload_time); -- 优化按上传时间排序的速度
+------------------------------------------------
+该项目为芒果开发使用php7.0
+作者qq1039536895
+该项目已在github上开源https://github.com/mang-guo1/-delete_file.git
